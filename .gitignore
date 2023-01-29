@@ -1,0 +1,5 @@
+venv
+temp
+.DS_Store
+.ipynb_checkpoints
+output.json
