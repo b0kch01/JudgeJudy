@@ -108,11 +108,14 @@ def walk_temp():
     total_lines = 0
 
     for dir in os.walk("temp"):
-        if any(bad in dir[0] for bad in
+        if any(bad in dir[0].lower() for bad in
                [".git", "package.json",
+                "babel.config.js",
                 "package-lock.json", ".lock"
-                ".png", ".jpg", ".svg",
-                "node_modules", "venv", ".vscode", "__pycache__", ".ico", ".csv", ".json"]
+                ".png", ".jpg", "jpeg", ".svg", ".webp", ".gif",
+                "node_modules", "venv", ".vscode",
+                "venv", ".expo", ".pem",
+                "__pycache__", ".ico", ".csv", ".json"]
                ):
             continue
 
