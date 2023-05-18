@@ -1,4 +1,6 @@
-https://github.com/rominf/profanity-filter.git
-https://github.com/b0kch01/portfolio.git
-https://github.com/b0kch01/NitroType-Bot.git
-https://github.com/b0kch01/Essay-Checker.git
+https://github.com/d-ysj/HackUCI23
+https://github.com/zhenglu8/AudioResolution/tree/new
+https://github.com/ConnorDelacruz14/zot-alarm
+https://github.com/michellelin1/remember-me
+https://github.com/sean3687/HackAtUCI
+https://github.com/castillios/hackuci23-travelapp

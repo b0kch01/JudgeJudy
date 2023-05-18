@@ -7,7 +7,13 @@ import json
 from alive_progress import alive_bar
 
 
-TITLE = "AutoJudge"
+TITLE = """
+ ▄▄▄· ▄• ▄▌▄▄▄▄▄       ▐▄▄▄▄• ▄▌·▄▄▄▄   ▄▄ • ▄▄▄ .
+▐█ ▀█ █▪██▌•██  ▪       ·███▪██▌██▪ ██ ▐█ ▀ ▪▀▄.▀·
+▄█▀▀█ █▌▐█▌ ▐█.▪ ▄█▀▄ ▪▄ ███▌▐█▌▐█· ▐█▌▄█ ▀█▄▐▀▀▪▄
+▐█ ▪▐▌▐█▄█▌ ▐█▌·▐█▌.▐▌▐▌▐█▌▐█▄█▌██. ██ ▐█▄▪▐█▐█▄▄▌
+ ▀  ▀  ▀▀▀  ▀▀▀  ▀█▄▀▪ ▀▀▀• ▀▀▀ ▀▀▀▀▀• ·▀▀▀▀  ▀▀▀ 
+"""
 
 
 # Only accepts GitHub Repo urls so far...
@@ -27,8 +33,13 @@ def verify_url(url: str):
 # Creates empty temp folder
 def create_temp_dir():
     if os.path.exists("temp/"):
-        subprocess.run(["rm", "-rf", "temp/"])
-    os.mkdir("temp")
+        s = subprocess.Popen("rm -rf temp", shell=True)
+        s.wait()
+    
+    if os.path.exists("temp/"):
+        create_temp_dir()
+    else:
+        os.mkdir("temp")
 
 
 # Prints the title
@@ -99,9 +110,9 @@ def walk_temp():
     for dir in os.walk("temp"):
         if any(bad in dir[0] for bad in
                [".git", "package.json",
-                "package-lock.json", "yarn.lock"
+                "package-lock.json", ".lock"
                 ".png", ".jpg", ".svg",
-                "node_modules"]
+                "node_modules", "venv", ".vscode", "__pycache__", ".ico", ".csv", ".json"]
                ):
             continue
 
@@ -129,10 +140,12 @@ def create_csv(urls):
     with alive_bar(len(urls), spinner="waves2", ctrl_c=False) as progress:
         for url in urls:
             repo_name = url.split('/')[4][:-5]
-            repo_name_padded = "• " + (repo_name + " "*12)[:12]
+            repo_name_padded = "↓ " + (repo_name + " "*17)[:10]
             progress.title(colored(repo_name_padded, "yellow"))
             clone_repo(url.strip())
 
+            repo_name_padded = "⌕ " + (repo_name + " "*17)[:10]
+            progress.title(colored(repo_name_padded, "cyan"))
             if len(faults := walk_temp()) > 0:
                 results.update({url: faults})
 
