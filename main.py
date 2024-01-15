@@ -5,6 +5,7 @@ import profanity_check
 from termcolor import colored, cprint
 import json
 from alive_progress import alive_bar
+from collections import defaultdict
 
 
 TITLE = """
@@ -84,6 +85,36 @@ def get_commit_n():
 
     return count
 
+def get_first_commit_date():
+    try:
+        date = subprocess.run(
+            ["cd temp; git log --pretty=format:%cd --date=format-local:'%Y-%m-%d %I:%M:%S %p' | tail -1"],
+            capture_output=True, shell=True).stdout.rstrip()
+    except ValueError:
+        date = 0
+
+    return date
+
+def get_last_commit_date():
+    try:
+        date = subprocess.run(
+            ["cd temp; git log -1 --format=%cd --date=format-local:'%Y-%m-%d %I:%M:%S %p' | tail -1"],
+            capture_output=True, shell=True).stdout.strip()
+    except ValueError:
+        date = 0
+
+    return date
+
+def get_most_additions():
+    try:
+        date = subprocess.run(
+            ["cd temp; git log --stat --oneline | grep 'insertions' | sort -nr -k4 | head -1"],
+            capture_output=True, shell=True).stdout.strip()
+    except ValueError:
+        date = 0
+
+    return date
+
 
 def get_file_stats(file):
     suspicious = []
@@ -136,12 +167,14 @@ def walk_temp():
 
 
 def create_csv(urls):
-    results = dict()
+    results = defaultdict(dict)
 
     cprint("✔ Cloning repositories...", "green")
 
     with alive_bar(len(urls), spinner="waves2", ctrl_c=False) as progress:
         for url in urls:
+            url = url.strip()
+            
             repo_name = url.split('/')[4][:-5]
             repo_name_padded = "↓ " + (repo_name + " "*17)[:10]
             progress.title(colored(repo_name_padded, "yellow"))
@@ -151,6 +184,13 @@ def create_csv(urls):
             progress.title(colored(repo_name_padded, "cyan"))
             if len(faults := walk_temp()) > 0:
                 results.update({url: faults})
+
+            # First commit
+            results[url]["first_commit"] = get_first_commit_date().decode("utf-8")
+            # Last commit
+            results[url]["last_commit"] = get_last_commit_date().decode("utf-8")
+            # Most additions
+            results[url]["most_additions"] = get_most_additions().decode("utf-8")
 
             progress()
 
