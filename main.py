@@ -1,12 +1,10 @@
 import os
 import subprocess
-import pyperclip
-import profanity_check
-from termcolor import colored, cprint
 import json
-from alive_progress import alive_bar
 from collections import defaultdict
-
+from alive_progress import alive_bar
+from termcolor import colored, cprint
+import profanity_check
 
 TITLE = """
  ▄▄▄· ▄• ▄▌▄▄▄▄▄       ▐▄▄▄▄• ▄▌·▄▄▄▄   ▄▄ • ▄▄▄ .
@@ -50,17 +48,6 @@ def title():
 
     print(
         f"Made with {colored('*magic*', attrs=['bold'])} by Nathan the intern.\n")
-
-
-# UNUSED, but asks for single url
-def ask_url():
-    if verify_url(github_url := pyperclip.paste()):
-        print(colored("Found GitHub Repo from pasteboard:",
-              "yellow", attrs=["bold"]), github_url)
-    else:
-        github_url = input(colored("Enter repo url: ", "blue", attrs=["bold"]))
-
-    return github_url
 
 
 # Clones a git repository to temp
