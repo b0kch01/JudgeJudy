@@ -2,4 +2,5 @@ venv
 temp
 .DS_Store
 .ipynb_checkpoints
+__pycache__
 output.json
