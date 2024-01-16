@@ -34,7 +34,7 @@ def create_temp_dir():
     if os.path.exists("temp/"):
         s = subprocess.Popen("rm -rf temp", shell=True)
         s.wait()
-    
+
     if os.path.exists("temp/"):
         create_temp_dir()
     else:
@@ -72,6 +72,7 @@ def get_commit_n():
 
     return count
 
+
 def get_first_commit_date():
     try:
         date = subprocess.run(
@@ -82,6 +83,7 @@ def get_first_commit_date():
 
     return date
 
+
 def get_last_commit_date():
     try:
         date = subprocess.run(
@@ -91,6 +93,7 @@ def get_last_commit_date():
         date = 0
 
     return date
+
 
 def get_most_additions():
     try:
@@ -161,7 +164,7 @@ def create_csv(urls):
     with alive_bar(len(urls), spinner="waves2", ctrl_c=False) as progress:
         for url in urls:
             url = url.strip()
-            
+
             repo_name = url.split('/')[4][:-5]
             repo_name_padded = "↓ " + (repo_name + " "*17)[:10]
             progress.title(colored(repo_name_padded, "yellow"))
