@@ -17,6 +17,8 @@
 4. Ignores any paths containing: `.git`, `package.json`, `package-lock.json`, `yarn.lock`, `.png`, `.jpg`, `.svg`, `node_modules`
 
 # Usage
+> If you have previously installed `profanity-filter`, please uninstall it before running this script.
+
 Install pip requirements:
 ```console
 pip install -r requirements.txt
