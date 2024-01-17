@@ -29,11 +29,17 @@ def verify_url(url: str):
     return all(rules)
 
 
-# Creates empty temp folder
-def create_temp_dir():
+# remove temp folder
+def remove_temp_dir():
     if os.path.exists("temp/"):
         s = subprocess.Popen("rm -rf temp", shell=True)
         s.wait()
+
+# Creates empty temp folder
+
+
+def create_temp_dir():
+    remove_temp_dir()
 
     if os.path.exists("temp/"):
         create_temp_dir()
@@ -57,7 +63,8 @@ def clone_repo(url):
         return
 
     create_temp_dir()
-    subprocess.run([f"git clone {url} temp/"], capture_output=True, shell=True)
+
+    return subprocess.run([f"git clone {url} temp/"], capture_output=True, shell=True)
 
 
 # Get the number of commits in temp
@@ -165,15 +172,19 @@ def create_csv(urls):
         for url in urls:
             url = url.strip()
 
-            repo_name = url.split('/')[4][:-5]
-            repo_name_padded = "↓ " + (repo_name + " "*17)[:10]
+            repo_name = url.split('/')[4][:-4]
+            repo_name_padded = "↓ " + (repo_name + " "*100)[:15]
             progress.title(colored(repo_name_padded, "yellow"))
-            clone_repo(url.strip())
 
-            repo_name_padded = "⌕ " + (repo_name + " "*17)[:10]
+            if (clone_result := clone_repo(url.strip())).returncode != 0:
+                results[url]["error"] = clone_result.stderr.decode("utf-8")
+                progress()
+                continue
+
+            repo_name_padded = "⌕ " + (repo_name + " "*100)[:15]
             progress.title(colored(repo_name_padded, "cyan"))
             if len(faults := walk_temp()) > 0:
-                results.update({url: faults})
+                results[url]["flagged_files"] = faults
 
             # First commit
             results[url]["first_commit"] = get_first_commit_date().decode("utf-8")
@@ -184,12 +195,18 @@ def create_csv(urls):
 
             progress()
 
+        repo_name_padded = "✔ " + (repo_name + " "*100)[:15]
+        progress.title(colored(repo_name_padded, "green"))
+
     print()
-    print(f"{len(results)} projects with profanity.")
+    print(
+        f"{len([r for r in results if 'flagged_files' in r])} projects with profanity.")
     export = json.dumps(results, indent=2)
     with open("output.json", "w") as live_file:
         live_file.write(export)
         cprint("Wrote to output.json", "blue")
+
+    remove_temp_dir()
 
 
 if __name__ == "__main__":

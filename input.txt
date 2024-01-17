@@ -1,4 +1,3 @@
-https://github.com/rominf/profanity-filter.git
-https://github.com/b0kch01/portfolio.git
-https://github.com/b0kch01/NitroType-Bot.git
-https://github.com/b0kch01/Essay-Checker.git
+https://github.com/b0kch01/JudgeJudy.git
+https://github.com/b0kch01/aselfasliefj.git
+https://github.com/b0kch01/valorant-cheat.git
