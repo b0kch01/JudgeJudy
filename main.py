@@ -64,7 +64,7 @@ def clone_repo(url):
 
     create_temp_dir()
 
-    return subprocess.run([f"git clone {url} temp/"], capture_output=True, shell=True)
+    return subprocess.run([f"GIT_ASKPASS=true git clone {url} temp/"], capture_output=True, shell=True)
 
 
 # Get the number of commits in temp
