@@ -32,7 +32,10 @@ def verify_url(url: str):
 # remove temp folder
 def remove_temp_dir():
     if os.path.exists("temp/"):
-        s = subprocess.Popen("rm -rf temp", shell=True)
+        if os.name == "nt":
+            s = subprocess.Popen("rmdir /S /Q temp", shell=True)
+        else:
+            s = subprocess.Popen("rm -rf temp", shell=True)
         s.wait()
 
 # Creates empty temp folder
@@ -49,7 +52,10 @@ def create_temp_dir():
 
 # Prints the title
 def title():
-    subprocess.run(["clear"])
+    if os.name == "nt":
+        subprocess.run(["cls"])
+    else:
+        subprocess.run(["clear"])
     cprint(TITLE)
 
     print(
@@ -155,10 +161,8 @@ def walk_temp():
                 if len(suspicious) > 0:
                     profanity_log[dir[0] + '/' + file] = suspicious
 
-    commit_n = get_commit_n()
-    if commit_n < 10 or len(profanity_log) > 0:
-        profanity_log['commit_number'] = commit_n
-        profanity_log['lines_checked'] = total_lines
+    profanity_log['commit_number'] = get_commit_n()
+    profanity_log['lines_checked'] = total_lines
 
     return profanity_log
 
